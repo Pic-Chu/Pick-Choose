@@ -7,6 +7,8 @@ import { signOut } from "firebase/auth";
 export default function Dashboard() {
   const [clientData, setClientData] = useState(null);
   const navigate = useNavigate();
+  const [siteStatus, setSiteStatus] = useState(null);
+
 
   useEffect(() => {
     const fetchClient = async () => {
@@ -15,7 +17,9 @@ export default function Dashboard() {
 
       const snap = await getDoc(doc(db, "clients", user.uid));
       if (snap.exists()) {
-        setClientData(snap.data());
+        const data = snap.data();
+        setClientData(data);
+        setSiteStatus(data.activity?.siteStatus || null);
       }
     };
 
