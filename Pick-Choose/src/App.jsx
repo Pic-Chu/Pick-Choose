@@ -1,15 +1,16 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login-temp";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Modules from "./pages/Modules";
+import Header from "./components/Header";
+import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/DashBoard";
-import Modules from "./pages/Modules";
 
-
-import ProtectedRoute from "./components/ProtectedRoute";
 
 export default function App() {
   return (
     <BrowserRouter>
+      <Header />
       <Routes>
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
@@ -30,6 +31,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        {/* On ajoutera provision, support, etc. après */}
       </Routes>
     </BrowserRouter>
   );
