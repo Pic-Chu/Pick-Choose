@@ -1,41 +1,48 @@
-import { useAuth } from "../context/AuthContext";
-import { signOut } from "firebase/auth";
-import { auth } from "../services/firebase";
-import { useNavigate } from "react-router-dom";
-import { availableModules } from "../modules";
-const Dashboard = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+import { useEffect, useState } from "react";
+import { auth, db } from "../services/firebase";
+import { doc, getDoc } from "firebase/firestore";
 
-  const handleLogout = async () => {
-    await signOut(auth);
-    navigate("/login");
-  };
-
-  return (
-    <>
-      <div className="p-8">
-        <h1 className="text-2xl font-bold">Bienvenue, {user?.email}</h1>
-        <button
-          onClick={handleLogout}
-          className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Se déconnecter
-        </button>
-      </div>
-      <div className="mt-8">
-        <h2 className="text-xl font-bold">Modules disponibles</h2>
-        <ul className="mt-4 space-y-2">
-          {availableModules.map((module) => (
-            <li key={module.name} className="p-4 border rounded shadow">
-              <h3 className="text-lg font-semibold">{module.name}</h3>
-              <p>{module.description}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </>
-  );
+// Import dynamique par ID
+const moduleComponents = {
+  referral: () => import("../modules/referral/index.jsx"),
+  ecommerce: () => import("../modules/ecommerce/index.jsx"),
+  booking: () => import("../modules/booking/index.jsx"),
 };
 
-export default Dashboard;
+export default function Dashboard() {
+  const [activeModules, setActiveModules] = useState([]);
+  const [components, setComponents] = useState([]);
+
+  useEffect(() => {
+    const fetchModules = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const data = snap.data();
+      const enabledModules = Object.entries(data?.modules || {})
+        .filter(([_, isActive]) => isActive)
+        .map(([id]) => id);
+
+      setActiveModules(enabledModules);
+
+      // Importation dynamique des composants
+      const imports = await Promise.all(
+        enabledModules.map((id) => moduleComponents[id]?.().then((mod) => mod.default))
+      );
+      setComponents(imports);
+    };
+
+    fetchModules();
+  }, []);
+
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      {components.map((Component, i) => (
+        <div key={i} className="mb-6 p-4 border rounded shadow bg-white">
+          <Component />
+        </div>
+      ))}
+    </div>
+  );
+}
