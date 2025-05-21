@@ -1,6 +1,7 @@
 export default {
+  id: "referral",
   name: "Parrainage",
-  description: "Invitez des clients et gagnez des récompenses.",
-  icon: "🎁",
-  route: "/referral"
+  description: "Ajoutez un système de parrainage à votre application.",
+  price: 5,
+  image: "/assets/referral.png", // optionnel
 };
