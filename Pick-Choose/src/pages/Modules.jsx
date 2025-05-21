@@ -43,13 +43,34 @@ export default function Modules() {
   }, [user]);
 
   const handleToggle = async (id) => {
-    const updated = {
-      ...selected,
-      [id]: !selected[id],
-    };
-    setSelected(updated);
-    await setDoc(doc(db, "clients", user.uid), { modules: updated }, { merge: true });
+  const updated = {
+    ...selected,
+    [id]: !selected[id],
   };
+  setSelected(updated);
+
+  const user = auth.currentUser;
+  const clientRef = doc(db, "clients", user.uid);
+  const clientSnap = await getDoc(clientRef);
+  const clientData = clientSnap.exists() ? clientSnap.data() : {};
+  const previousActivity = clientData.activity || {};
+
+  await setDoc(clientRef, {
+    modules: updated,
+    activity: {
+      ...previousActivity,
+      modules: [
+        ...(previousActivity.modules || []),
+        {
+          id,
+          date: new Date().toISOString(),
+          action: updated[id] ? "activated" : "deactivated",
+        },
+      ],
+    },
+  }, { merge: true });
+};
+
 
   const total = allModules.reduce((sum, mod) => sum + (selected[mod.id] ? mod.price : 0), 0);
 
