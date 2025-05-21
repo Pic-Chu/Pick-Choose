@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/DashBoard";
 import Activity from "./pages/Activity";
+import Provision from "./pages/Provision";
 
 export default function App() {
   return (
@@ -39,7 +40,14 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        {/* On ajoutera provision, support, etc. après */}
+        <Route
+          path="/provision"
+          element={
+            <ProtectedRoute>
+              <Provision />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
