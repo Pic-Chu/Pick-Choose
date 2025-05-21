@@ -17,10 +17,11 @@ export default function Header() {
       </div>
 
       <nav className="space-x-4">
-        <Link to="/dashboard" className="hover:underline text-gray-700">🏠 Dashboard</Link>
-        <Link to="/modules" className="hover:underline text-gray-700">🧩 Modules</Link>
-        <Link to="/provision" className="hover:underline text-gray-700">🛠️ Commander mon site</Link>
-        <Link to="/support" className="hover:underline text-gray-700">📞 Contact</Link>
+        <Link to="/dashboard" className="hover:underline text-gray-700">Dashboard</Link>
+        <Link to="/modules" className="hover:underline text-gray-700"> Modules</Link>
+        <Link to="/provision" className="hover:underline text-gray-700"> Commander mon site</Link>
+        <Link to="/activity" className="hover:underline text-gray-700"> Historique</Link>
+        <Link to="/support" className="hover:underline text-gray-700"> Contact</Link>
         <button onClick={handleLogout} className="text-red-500 hover:underline">
           Déconnexion
         </button>
