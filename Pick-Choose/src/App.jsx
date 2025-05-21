@@ -5,7 +5,7 @@ import Header from "./components/Header";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/DashBoard";
-
+import Activity from "./pages/Activity";
 
 export default function App() {
   return (
@@ -28,6 +28,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Modules />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/activity"
+          element={
+            <ProtectedRoute>
+              <Activity />
             </ProtectedRoute>
           }
         />
