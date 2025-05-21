@@ -1,32 +1,54 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../services/firebase";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-export default function Register() {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [error, setError] = useState(null);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      console.log("User registered successfully");
-      //navigate("/dashboard");
-    } catch (error) {
-      alert(error.message);
+      navigate("/dashboard");
+    } catch (err) {
+      setError(err.message);
     }
   };
 
   return (
-    <form onSubmit={handleRegister} className="p-4 space-y-4">
-      <h2 className="text-xl font-bold">Inscription</h2>
-      <input type="email" placeholder="Email" className="border p-2 w-full"
-        onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" placeholder="Mot de passe" className="border p-2 w-full"
-        onChange={(e) => setPassword(e.target.value)} />
-      <button className="bg-blue-600 text-white p-2">S’inscrire</button>
-    </form>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <form onSubmit={handleRegister} className="bg-white p-8 rounded shadow-md w-full max-w-sm">
+        <h2 className="text-2xl font-bold mb-6 text-center">Créer un compte</h2>
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        <input
+          type="email"
+          placeholder="Email"
+          className="mb-4 w-full px-3 py-2 border rounded"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Mot de passe"
+          className="mb-4 w-full px-3 py-2 border rounded"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+        >
+          S’inscrire
+        </button>
+      </form>
+    </div>
   );
-}
+};
+
+export default Register;

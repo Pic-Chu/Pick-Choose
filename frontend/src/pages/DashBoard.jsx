@@ -1,31 +1,28 @@
-import { useState } from "react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "../context/AuthContext";
+import { signOut } from "firebase/auth";
 import { auth } from "../services/firebase";
 import { useNavigate } from "react-router-dom";
 
-export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const Dashboard = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      navigate("/dashboard");
-    } catch (error) {
-      alert(error.message);
-    }
+  const handleLogout = async () => {
+    await signOut(auth);
+    navigate("/login");
   };
 
   return (
-    <form onSubmit={handleRegister} className="p-4 space-y-4">
-      <h2 className="text-xl font-bold">Inscription</h2>
-      <input type="email" placeholder="Email" className="border p-2 w-full"
-        onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" placeholder="Mot de passe" className="border p-2 w-full"
-        onChange={(e) => setPassword(e.target.value)} />
-      <button className="bg-blue-600 text-white p-2">S’inscrire</button>
-    </form>
+    <div className="p-8">
+      <h1 className="text-2xl font-bold">Bienvenue, {user?.email}</h1>
+      <button
+        onClick={handleLogout}
+        className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+      >
+        Se déconnecter
+      </button>
+    </div>
   );
-}
+};
+
+export default Dashboard;
